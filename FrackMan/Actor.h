@@ -2,15 +2,19 @@
 #define ACTOR_H_
 
 #include "GraphObject.h"
+class StudentWorld;
 
 // Students:  Add code to this file, Actor.cpp, StudentWorld.h, and StudentWorld.cpp
 
 class Actor : public GraphObject
 {
 public:
-    Actor(int imageID, int startX, int startY, Direction dir = right, double size = 1.0, int depth = 0) ;
+    Actor(StudentWorld* sw, int imageID, int startX, int startY, Direction dir = right, double size = 1.0, int depth = 0) ;
     ~Actor(){};
     virtual void doSomething() = 0;
+    StudentWorld* getWorld() {return m_sw;};
+    
+    StudentWorld* m_sw;
     
     
 };
@@ -26,9 +30,9 @@ public:
 class FrackMan : public Actor
 {
 public:
-    FrackMan(int x, int y);
+    FrackMan(StudentWorld* sw, int x, int y);
     ~FrackMan() {};
-    void doSomething() {};
+    void doSomething();
 };
 
 

@@ -22,7 +22,7 @@ public:
         for(int i = 0; i != 30; i++)
             for(int j = 0; j != 30; j++)
                m_dirt[i][j] = new Dirt(i,j);
-        m_frackman = new FrackMan(30, 60);
+        m_frackman = new FrackMan(this, 30, 60);
         
         
         
