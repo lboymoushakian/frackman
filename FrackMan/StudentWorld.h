@@ -22,7 +22,7 @@ public:
         for(int i = 0; i != 30; i++)
             for(int j = 0; j != 59; j++)
                m_dirt[i][j] = new Dirt(i,j);
-        for(int i = 34; i != 59; i++)
+        for(int i = 34; i != 64; i++)
             for (int j = 0; j != 59; j++)
                 m_dirt[i][j]= new Dirt(i, j);
         m_frackman = new FrackMan(this, 30, 60);
@@ -31,7 +31,7 @@ public:
         
         return GWSTATUS_CONTINUE_GAME;
 	}
-
+    ~StudentWorld();
 	virtual int move()
 	{
 		  // This code is here merely to allow the game to build, run, and terminate after you hit enter a few times.
@@ -41,9 +41,8 @@ public:
 		return GWSTATUS_CONTINUE_GAME;
 	}
 
-	virtual void cleanUp()
-	{
-	}
+    virtual void cleanUp();
+	
 
 
     FrackMan* m_frackman;
