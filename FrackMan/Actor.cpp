@@ -22,6 +22,13 @@ Actor::Actor(StudentWorld* sw, int imageID, int startX, int startY, Direction di
 void FrackMan::doSomething()
 {
     int ch;
+    for(int i = getX(); i != getX()+4; i++)
+        for(int j = getY(); j != getY() + 4; j++)
+        {
+            if(m_sw->m_dirt[i][j] != nullptr)
+            {delete m_sw->m_dirt[i][j];
+               m_sw-> m_dirt[i][j] = nullptr;}
+        }
     if (getWorld()->getKey(ch) == true)
     {
         // user hit a key this tick!

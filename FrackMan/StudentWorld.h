@@ -20,8 +20,11 @@ public:
 	virtual int init()
 	{
         for(int i = 0; i != 30; i++)
-            for(int j = 0; j != 30; j++)
+            for(int j = 0; j != 59; j++)
                m_dirt[i][j] = new Dirt(i,j);
+        for(int i = 34; i != 59; i++)
+            for (int j = 0; j != 59; j++)
+                m_dirt[i][j]= new Dirt(i, j);
         m_frackman = new FrackMan(this, 30, 60);
         
         
@@ -42,9 +45,9 @@ public:
 	{
 	}
 
-private:
+
     FrackMan* m_frackman;
-    Dirt* m_dirt[64][64];
+    Dirt* m_dirt[64][64] = {nullptr};
 };
 
 #endif // STUDENTWORLD_H_
