@@ -6,7 +6,9 @@
 #include "Actor.h"
 #include <string>
 #include <random>
-//using namespace std;
+#include <cmath>
+#include <list>
+using namespace std;
 
 
 // Students:  Add code to this file, StudentWorld.cpp, Actor.h, and Actor.cpp
@@ -38,39 +40,50 @@ public:
         int B = minInt(m_currlevel / 2 + 2, 6);
         for(int i = 0; i != B; i++)
         {
-            m_actors[m_numactors] = new Boulder(this, randInt(0, 60), randInt(20, 56));
-            m_numactors++;
-            
+            int x = randInt(0, 60);
+            int y = randInt(20, 56);
+            while(isTooClose(x, y))
+            {
+                x = randInt(0, 60);
+                y = randInt(20, 56);
+            }
+             m_actors.push_front(new Boulder(this, x, y));
         }
+        
+        int L = minInt(2 + m_currlevel, 20);
+        for(int i = 0; i != L; i++)
+        {
+            int x = randInt(0, 60);
+            int y = randInt(0, 56);
+            while(isTooClose(x, y))
+            {
+                x = randInt(0, 60);
+                y = randInt(0, 56);
+            }
+            m_actors.push_front(new OilBarrel(this, x, y));
+        }
+        
         
         return GWSTATUS_CONTINUE_GAME;
 	}
     
     ~StudentWorld();
-	virtual int move()
-	{
-		  // This code is here merely to allow the game to build, run, and terminate after you hit enter a few times.
-		  // Notice that the return value GWSTATUS_PLAYER_DIED will cause our framework to end the current level.
-        m_frackman->doSomething();
-        for(int k = 0; k != m_numactors; k++)
-            m_actors[k] -> doSomething();
-        //decLives();
-		return GWSTATUS_CONTINUE_GAME;
-	}
-
+    virtual int move();
     virtual void cleanUp();
+    void removeDeadGameObjects();
     
     bool isDirt(int x, int y);
     void removeDirt(int x, int y) {delete m_dirt[x][y];
         m_dirt[x][y] = nullptr;};
     int minInt(int first, int second);
+    bool isTooClose(int x, int y);
 	
-private:
+
 
     FrackMan* m_frackman;
     Dirt* m_dirt[64][64] = {nullptr};
-    Actor* m_actors[100];
-    int m_numactors = 0;
+    list<Actor*> m_actors;
+   
     int m_currlevel = 0;
 };
 

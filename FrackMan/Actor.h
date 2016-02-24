@@ -11,7 +11,7 @@ class Actor : public GraphObject
 {
 public:
     Actor(StudentWorld* sw, int imageID, int startX, int startY, Direction dir = right, double size = 1.0, int depth = 0) ;
-    ~Actor(){};
+    virtual ~Actor(){};
     virtual void doSomething() = 0;
     bool isAlive() const {return m_alive;};
     void setDead(){m_alive = false;};
@@ -25,12 +25,42 @@ private:
     
 };
 
+class ActivatingObject : public Actor
+{
+public:
+    ActivatingObject(StudentWorld* world, int startX, int startY, int imageID,
+                                     int soundToPlay);
+    //virtual void move();
+    
+    /// Set number of ticks until this object dies
+    //void setTicksToLive(){};
+};
+
+class OilBarrel : public ActivatingObject
+{
+public:
+    OilBarrel(StudentWorld* world, int startX, int startY);
+    void doSomething() {};
+    //virtual void move(){};
+    //virtual bool needsToBePickedUpToFinishLevel() const;
+};
+
 class Dirt : public GraphObject
 {
 public:
     Dirt(int x, int y);
     ~Dirt() {};
 
+};
+
+class Squirt : public Actor
+{
+public:
+    Squirt(StudentWorld* sw, int x, int y, int travel, Direction dir);
+    ~Squirt() {setVisible(false);};
+    void doSomething() ;
+private:
+    int m_count;
 };
 
 class FrackMan : public Actor
@@ -50,20 +80,15 @@ private:
 class Boulder : public Actor
 {
 public:
-    Boulder(StudentWorld* world, int startX, int startY);
+    Boulder(StudentWorld* sw, int startX, int startY);
     virtual void move() {};
     //virtual bool canActorsPassThroughMe() const;
     void doSomething();
-    bool isStable() {return m_stable;};
-    void setWaiting() {m_stable = false; m_waiting = true;};
-    bool isWaiting() {return m_waiting;};
-    void setFalling() {m_falling = true;};
-    bool isFalling() {return m_falling;};
+    
     bool isDirtUnder(int x, int y);
 private:
-    bool m_stable;
     bool m_falling;
-    bool m_waiting;
+    
     int m_count = 0;
 };
 

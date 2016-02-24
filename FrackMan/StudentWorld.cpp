@@ -28,7 +28,43 @@ StudentWorld::~StudentWorld()
     
 }
 
+void StudentWorld::removeDeadGameObjects()
+{
+   
+    for(list<Actor*>::iterator p = m_actors.begin(); p != m_actors.end(); p++)
+    {
+        if(!((*p)->isAlive()))
+        {
+            m_actors.erase(p);
+            }
+        
+    }
+    
+}
 
+int StudentWorld::move()
+    {
+        // This code is here merely to allow the game to build, run, and terminate after you hit enter a few times.
+        // Notice that the return value GWSTATUS_PLAYER_DIED will cause our framework to end the current level.
+        m_frackman->doSomething();
+        for(list<Actor*>::iterator p = m_actors.begin(); p != m_actors.end(); p++)
+            (*p)->doSomething();
+        removeDeadGameObjects();
+        
+         
+        return GWSTATUS_CONTINUE_GAME;
+    }
+
+
+bool StudentWorld::isTooClose(int x, int y)
+{
+    for(list<Actor*>::iterator p = m_actors.begin(); p != m_actors.end(); p++)
+    {
+        if(((*p)->getX() - x) *((*p)->getX() - x) + ((*p)->getY() - y) * ((*p)->getY() - y) < 7)
+            return true;
+    }
+    return false;
+}
  void StudentWorld::cleanUp()
 {
     delete m_frackman;

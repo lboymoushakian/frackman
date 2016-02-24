@@ -14,8 +14,8 @@ FrackMan::FrackMan(StudentWorld* sw, int x, int y)
 :Actor(sw, IID_PLAYER, x, y, right, 1.0, 0)
 {
     setVisible(true);}
-Boulder::Boulder(StudentWorld* world, int startX, int startY)
-:Actor(world, IID_BOULDER, startX, startY, down, 1.0, 1), m_stable(true)
+Boulder::Boulder(StudentWorld* sw, int startX, int startY)
+:Actor(sw, IID_BOULDER, startX, startY, down, 1.0, 1), m_count(0)
 {
     setVisible(true);
     for(int i = startX; i != startX +4; i++)
@@ -23,28 +23,54 @@ Boulder::Boulder(StudentWorld* world, int startX, int startY)
         getWorld()->removeDirt(i, j);
 }
 
+Squirt::Squirt(StudentWorld* sw, int x, int y, int travel, Direction dir)
+:Actor(sw, IID_WATER_SPURT, x, y, dir, 1.0, 1), m_count(travel)
+{setVisible(true);}
+
+OilBarrel::OilBarrel(StudentWorld* world, int startX, int startY)
+:ActivatingObject(world, startX, startY, IID_BARREL, SOUND_FOUND_OIL)
+{setVisible(false);}
+ActivatingObject::ActivatingObject(StudentWorld* world, int startX, int startY, int imageID, int soundToPlay)
+:Actor(world, imageID, startX, startY, right, 1.0, 2)
+{}
+
+
+ void Squirt::doSomething()
+{
+   if(m_count == 0)
+       setDead();
+    if(m_count > 0 &&getDirection() == right && !getWorld()->isDirt(getX()+1, getY()))
+        moveTo(getX()+1, getY());
+    else if(m_count > 0 &&getDirection() == left)
+        moveTo(getX()-1, getY());
+    else if(m_count > 0 &&getDirection() == up)
+        moveTo(getX(), getY()+1);
+    else if(m_count > 0 &&getDirection() == down)
+        moveTo(getX(), getY()-1);
+    else
+        setDead();
+    m_count--;
+}
+
 
 Actor::Actor(StudentWorld* sw, int imageID, int startX, int startY, Direction dir, double size, int depth)
 :GraphObject(imageID, startX, startY, dir, size, depth), m_sw(sw)
 {
     setVisible(true);
+    m_alive = true;
 }
 
 void Boulder::doSomething()
 {
     if(isAlive() == false)
         return;
-    if(isStable() && isDirtUnder(getX(), getY()))
-           return;
-    else if(isStable() && !isDirtUnder(getX(), getY()))
-            setWaiting();
-    if(isWaiting() && m_count < 30)
-    {  m_count++; return;}
-    if (isWaiting() &&m_count >=30)
-        setFalling();
-    if(isFalling() )
+    if(isDirtUnder(getX(), getY())==true)
+        return;
+     if(isDirtUnder(getX(), getY())==false)
+         m_count++;
+    if(m_count >-1 )
     {
-        if(getY() -1 >=0 && !isDirtUnder(getX(), getY()))
+        if(getY() -1 >=0 /*&& isDirtUnder(getX(), getY()) == false*/)
         moveTo(getX(), getY() -1);
     }
         
@@ -53,8 +79,8 @@ void Boulder::doSomething()
 
 bool Boulder::isDirtUnder(int x, int y)
 {
-    for(int i = getX(); i != getX() + 4; i++)
-        if(getWorld()->isDirt(i, getY()))
+    for(; x != x+ 4; x++)
+        if(getWorld()->isDirt(x, y-1))
             return true;
     return false;
     
@@ -107,15 +133,25 @@ void FrackMan::doSomething()
             case KEY_PRESS_ESCAPE:
                 setDead();
                 break;
-            case KEY_PRESS_SPACE:
-                //squirt
-                break;
+            
             case KEY_PRESS_TAB:
                 //gold
                 break;
             case 'Z':
             case 'z':
                 //sonar
+                break;
+            case KEY_PRESS_SPACE:
+              if(getDirection() == right)  //m_actors.push_front(new Boulder(this, x, y))
+                   getWorld()->m_actors.push_front(new Squirt(getWorld(), getX()+3, getY(), 4, getDirection()));
+                if(getDirection() == left)
+                    getWorld()->m_actors.push_front(new Squirt(getWorld(), getX()-3, getY(), 4, getDirection()));
+                if(getDirection() == up)
+                    getWorld()->m_actors.push_front(new Squirt(getWorld(), getX(), getY()+3, 4, getDirection()));
+                if(getDirection() == down)
+                    getWorld()->m_actors.push_front(new Squirt(getWorld(), getX(), getY()-3, 4, getDirection()));
+                
+                                                                          
                 break;
                 
                 // etc…
