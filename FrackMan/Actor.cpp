@@ -31,6 +31,11 @@ OilBarrel::OilBarrel(StudentWorld* world, int startX, int startY)
 :ActivatingObject(world, startX, startY, IID_BARREL, SOUND_FOUND_OIL)
 {setVisible(false);
 }
+
+goldForFrackman::goldForFrackman(StudentWorld* world, int startX, int startY)
+:ActivatingObject(world, startX, startY, IID_GOLD, SOUND_GOT_GOODIE)
+{setVisible(false);}
+
 ActivatingObject::ActivatingObject(StudentWorld* world, int startX, int startY, int imageID, int soundToPlay)
 :Actor(world, imageID, startX, startY, right, 1.0, 2)
 {}
@@ -68,6 +73,27 @@ void OilBarrel::doSomething()
     m_count--;
 }
 
+void goldForFrackman::doSomething()
+{
+    if(!isAlive())
+        return;
+   
+    if(getWorld()->m_frackman->getX() - getX() < 3 &&getWorld()->m_frackman->getX() - getX() > -3 &&
+       getWorld()->m_frackman->getY() - getY() < 3 &&getWorld()->m_frackman->getY() - getY() > -3)
+    {
+        setDead();
+        GameController::getInstance().playSound(SOUND_GOT_GOODIE);
+        getWorld()->m_frackman->increaseScore(10);
+        getWorld()->m_frackman->increaseGold();
+        
+    }
+    if(getWorld()->m_frackman->getX() - getX() < 4 &&getWorld()->m_frackman->getX() - getX() > -4 &&
+       getWorld()->m_frackman->getY() - getY() < 4 &&getWorld()->m_frackman->getY() - getY() > -4)
+    {
+        setVisible(true);
+        return;
+    }
+}
 
 Actor::Actor(StudentWorld* sw, int imageID, int startX, int startY, Direction dir, double size, int depth)
 :GraphObject(imageID, startX, startY, dir, size, depth), m_sw(sw)

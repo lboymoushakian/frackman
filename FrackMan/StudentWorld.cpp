@@ -93,4 +93,11 @@ int StudentWorld::minInt(int first, int second)
         return second;
     return first;
 }
+
+int StudentWorld::maxInt(int first, int second)
+{
+    if(first < second)
+        return second;
+    return first;
+}
 // Students:  Add code to this file (if you wish), StudentWorld.h, Actor.h and Actor.cpp

@@ -64,6 +64,18 @@ public:
             m_actors.push_front(new OilBarrel(this, x, y));
         }
         
+        int G = maxInt(5-m_currlevel / 2, 2);
+        for(int i = 0; i != G; i++)
+        {
+            int x = randInt(0, 60);
+            int y = randInt(0, 56);
+            while(isTooClose(x, y, 6))
+            {
+                x = randInt(0, 60);
+                y = randInt(0, 56);
+            }
+            m_actors.push_front(new goldForFrackman(this, x, y));
+        }
         
         return GWSTATUS_CONTINUE_GAME;
 	}
@@ -77,6 +89,7 @@ public:
     void removeDirt(int x, int y) {delete m_dirt[x][y];
         m_dirt[x][y] = nullptr;};
     int minInt(int first, int second);
+    int maxInt(int first, int second);
     bool isTooClose(int x, int y, int amt);
     void decreaseBarrels() {m_barrelsleft--;};
 	

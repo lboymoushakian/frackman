@@ -70,6 +70,7 @@ public:
     ~FrackMan() {};
     void doSomething();
     void increaseScore(int x) {m_score+= x;};
+    void increaseGold() {m_gold++;};
 private:
     int m_life;
     int m_water;
@@ -78,6 +79,13 @@ private:
     int m_score;
 };
 
+class goldForFrackman : public ActivatingObject
+{
+public:
+    goldForFrackman(StudentWorld* world, int startX, int startY);
+    void doSomething();
+    ~goldForFrackman() {setVisible(false);};
+};
 
 class Boulder : public Actor
 {
