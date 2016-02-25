@@ -35,7 +35,8 @@ void StudentWorld::removeDeadGameObjects()
     {
         if(!((*p)->isAlive()))
         {
-            m_actors.erase(p);
+            delete *p;
+            p  = m_actors.erase(p);
             }
         
     }
@@ -51,16 +52,20 @@ int StudentWorld::move()
             (*p)->doSomething();
         removeDeadGameObjects();
         
-         
+         if(m_barrelsleft == 0)
+         {
+             m_currlevel++;
+             return GWSTATUS_FINISHED_LEVEL;
+         }
         return GWSTATUS_CONTINUE_GAME;
     }
 
 
-bool StudentWorld::isTooClose(int x, int y)
+bool StudentWorld::isTooClose(int x, int y, int amt)
 {
     for(list<Actor*>::iterator p = m_actors.begin(); p != m_actors.end(); p++)
     {
-        if(((*p)->getX() - x) *((*p)->getX() - x) + ((*p)->getY() - y) * ((*p)->getY() - y) < 7)
+        if(((*p)->getX() - x) *((*p)->getX() - x) + ((*p)->getY() - y) * ((*p)->getY() - y) < amt)
             return true;
     }
     return false;

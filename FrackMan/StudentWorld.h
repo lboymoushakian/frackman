@@ -38,11 +38,12 @@ public:
         m_frackman = new FrackMan(this, 30, 60);
         
         int B = minInt(m_currlevel / 2 + 2, 6);
+        m_barrelsleft = B;
         for(int i = 0; i != B; i++)
         {
             int x = randInt(0, 60);
             int y = randInt(20, 56);
-            while(isTooClose(x, y))
+            while(isTooClose(x, y, 6))
             {
                 x = randInt(0, 60);
                 y = randInt(20, 56);
@@ -55,7 +56,7 @@ public:
         {
             int x = randInt(0, 60);
             int y = randInt(0, 56);
-            while(isTooClose(x, y))
+            while(isTooClose(x, y, 6))
             {
                 x = randInt(0, 60);
                 y = randInt(0, 56);
@@ -76,13 +77,15 @@ public:
     void removeDirt(int x, int y) {delete m_dirt[x][y];
         m_dirt[x][y] = nullptr;};
     int minInt(int first, int second);
-    bool isTooClose(int x, int y);
+    bool isTooClose(int x, int y, int amt);
+    void decreaseBarrels() {m_barrelsleft--;};
 	
 
 
     FrackMan* m_frackman;
     Dirt* m_dirt[64][64] = {nullptr};
     list<Actor*> m_actors;
+    int m_barrelsleft;
    
     int m_currlevel = 0;
 };

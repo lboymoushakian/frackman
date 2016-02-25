@@ -40,9 +40,9 @@ class OilBarrel : public ActivatingObject
 {
 public:
     OilBarrel(StudentWorld* world, int startX, int startY);
-    void doSomething() {};
-    //virtual void move(){};
-    //virtual bool needsToBePickedUpToFinishLevel() const;
+    void doSomething();
+    ~OilBarrel() {setVisible(false);};
+    
 };
 
 class Dirt : public GraphObject
@@ -57,7 +57,7 @@ class Squirt : public Actor
 {
 public:
     Squirt(StudentWorld* sw, int x, int y, int travel, Direction dir);
-    ~Squirt() {setVisible(false);};
+    ~Squirt() {};
     void doSomething() ;
 private:
     int m_count;
@@ -69,11 +69,13 @@ public:
     FrackMan(StudentWorld* sw, int x, int y);
     ~FrackMan() {};
     void doSomething();
+    void increaseScore(int x) {m_score+= x;};
 private:
     int m_life;
     int m_water;
     int m_sonar;
     int m_gold;
+    int m_score;
 };
 
 

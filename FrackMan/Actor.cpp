@@ -11,7 +11,7 @@ Dirt::Dirt(int x, int y)
 }
 
 FrackMan::FrackMan(StudentWorld* sw, int x, int y)
-:Actor(sw, IID_PLAYER, x, y, right, 1.0, 0)
+:Actor(sw, IID_PLAYER, x, y, right, 1.0, 0), m_score(0)
 {
     setVisible(true);}
 Boulder::Boulder(StudentWorld* sw, int startX, int startY)
@@ -29,11 +29,27 @@ Squirt::Squirt(StudentWorld* sw, int x, int y, int travel, Direction dir)
 
 OilBarrel::OilBarrel(StudentWorld* world, int startX, int startY)
 :ActivatingObject(world, startX, startY, IID_BARREL, SOUND_FOUND_OIL)
-{setVisible(false);}
+{setVisible(false);
+}
 ActivatingObject::ActivatingObject(StudentWorld* world, int startX, int startY, int imageID, int soundToPlay)
 :Actor(world, imageID, startX, startY, right, 1.0, 2)
 {}
 
+void OilBarrel::doSomething()
+{
+    if(!isAlive())
+        return;
+    
+    if(getWorld()->m_frackman->getX() - getX() < 3 &&getWorld()->m_frackman->getX() - getX() > -3 &&
+       getWorld()->m_frackman->getY() - getY() < 3 &&getWorld()->m_frackman->getY() - getY() > -3)
+    { setDead();
+    GameController::getInstance().playSound(SOUND_FOUND_OIL);
+        getWorld()->m_frackman->increaseScore(1000);
+        getWorld()->decreaseBarrels();}
+    if(getWorld()->m_frackman->getX() - getX() < 5 &&getWorld()->m_frackman->getX() - getX() > -5 &&
+       getWorld()->m_frackman->getY() - getY() < 5 &&getWorld()->m_frackman->getY() - getY() > -5)
+    { setVisible(true); return;}
+}
 
  void Squirt::doSomething()
 {
