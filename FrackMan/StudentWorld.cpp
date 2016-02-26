@@ -50,6 +50,25 @@ int StudentWorld::move()
         m_frackman->doSomething();
         for(list<Actor*>::iterator p = m_actors.begin(); p != m_actors.end(); p++)
             (*p)->doSomething();
+        
+        int G = m_currlevel * 25 + 300;
+        if(randInt(0, G) == 1)
+        {
+            if(randInt(0, 4) == 1)
+                m_actors.push_front(new SonarKit(this, 0, 60));
+            else
+            {
+                int x = randInt(0, 60);
+                int y = randInt(0, 60);
+                while(isDirt4x4(x, y) == false)
+                {
+                    x = randInt(0, 60);
+                    y = randInt(0, 60);
+                }
+            m_actors.push_front(new WaterPool(this, x, y));
+            }
+        }
+        
         removeDeadGameObjects();
         
          if(m_barrelsleft == 0)
@@ -85,6 +104,14 @@ bool StudentWorld::isDirt(int x, int y)
     if(m_dirt[x][y] != nullptr)
         return true;
     return false;
+}
+bool StudentWorld::isDirt4x4(int x, int y)
+{
+    for(int i = x; i != x +4; i++)
+        for(int j = y; j != y + 4; j++)
+            if(isDirt(i, j))
+                return false;
+    return true;
 }
 
 int StudentWorld::minInt(int first, int second)

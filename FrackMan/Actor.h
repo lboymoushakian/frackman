@@ -33,9 +33,27 @@ public:
     //virtual void move();
     
     /// Set number of ticks until this object dies
-    //void setTicksToLive(){};
+    void setTicksToLive(int ticks){m_tickstolive = ticks;};
+    void decreaseTicksToLive() {m_tickstolive--;};
+private:
+    int m_tickstolive;
 };
 
+
+class WaterPool : public ActivatingObject
+{
+public:
+    WaterPool(StudentWorld* world, int startX, int startY);
+    void doSomething() ;
+    ~WaterPool() {setVisible(false);}
+};
+class SonarKit : public ActivatingObject
+{
+public:
+    SonarKit(StudentWorld* world, int startX, int startY);
+    void doSomething();
+    ~SonarKit() {setVisible(false);}
+};
 class OilBarrel : public ActivatingObject
 {
 public:
@@ -71,6 +89,10 @@ public:
     void doSomething();
     void increaseScore(int x) {m_score+= x;};
     void increaseGold() {m_gold++;};
+    void increaseSonar() {m_sonar++;};
+    int getWater() { return m_water;};
+    void decreaseWater() {m_water--;};
+    void addWater() {m_water+= 5;};
 private:
     int m_life;
     int m_water;
@@ -87,6 +109,13 @@ public:
     ~goldForFrackman() {setVisible(false);};
 };
 
+class goldForProtester : public ActivatingObject
+{
+public:
+    goldForProtester(StudentWorld* world, int startX, int startY);
+    void doSomething() {};
+    ~goldForProtester() {setVisible(false);}
+};
 class Boulder : public Actor
 {
 public:

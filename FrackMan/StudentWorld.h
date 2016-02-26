@@ -92,6 +92,7 @@ public:
     int maxInt(int first, int second);
     bool isTooClose(int x, int y, int amt);
     void decreaseBarrels() {m_barrelsleft--;};
+    bool isDirt4x4(int x, int y);
 	
 
 

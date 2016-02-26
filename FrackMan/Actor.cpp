@@ -11,7 +11,7 @@ Dirt::Dirt(int x, int y)
 }
 
 FrackMan::FrackMan(StudentWorld* sw, int x, int y)
-:Actor(sw, IID_PLAYER, x, y, right, 1.0, 0), m_score(0)
+:Actor(sw, IID_PLAYER, x, y, right, 1.0, 0), m_score(0), m_water(5), m_sonar(1)
 {
     setVisible(true);}
 Boulder::Boulder(StudentWorld* sw, int startX, int startY)
@@ -36,9 +36,27 @@ goldForFrackman::goldForFrackman(StudentWorld* world, int startX, int startY)
 :ActivatingObject(world, startX, startY, IID_GOLD, SOUND_GOT_GOODIE)
 {setVisible(false);}
 
+goldForProtester::goldForProtester(StudentWorld* world, int startX, int startY)
+:ActivatingObject(world, startX, startY, IID_GOLD, SOUND_PROTESTER_FOUND_GOLD)
+{
+    setVisible(true);
+}
+
 ActivatingObject::ActivatingObject(StudentWorld* world, int startX, int startY, int imageID, int soundToPlay)
 :Actor(world, imageID, startX, startY, right, 1.0, 2)
 {}
+
+SonarKit::SonarKit(StudentWorld* world, int startX, int startY)
+:ActivatingObject(world, startX, startY, IID_SONAR, SOUND_GOT_GOODIE)
+{
+    setVisible(true);
+}
+
+WaterPool::WaterPool(StudentWorld* world, int startX, int startY)
+:ActivatingObject(world, startX, startY, IID_WATER_POOL, SOUND_GOT_GOODIE)
+{
+    setVisible(true);
+}
 
 void OilBarrel::doSomething()
 {
@@ -56,17 +74,46 @@ void OilBarrel::doSomething()
     { setVisible(true); return;}
 }
 
+void SonarKit::doSomething()
+{
+    if(!isAlive())
+        return;
+    if(getWorld()->m_frackman->getX() - getX() < 3 &&getWorld()->m_frackman->getX() - getX() > -3 &&
+       getWorld()->m_frackman->getY() - getY() < 3 &&getWorld()->m_frackman->getY() - getY() > -3)
+    {
+        setDead();
+        GameController::getInstance().playSound(SOUND_GOT_GOODIE);
+        getWorld()->m_frackman->increaseScore(75);
+        getWorld()->m_frackman->increaseSonar();
+        getWorld()->m_frackman->increaseSonar();
+    }
+}
+
+
+void WaterPool::doSomething()
+{
+    if(!isAlive())
+        return;
+    if(getWorld()->m_frackman->getX() - getX() < 3 &&getWorld()->m_frackman->getX() - getX() > -3 &&
+       getWorld()->m_frackman->getY() - getY() < 3 &&getWorld()->m_frackman->getY() - getY() > -3)
+    {
+        setDead();
+        GameController::getInstance().playSound(SOUND_GOT_GOODIE);
+        getWorld()->m_frackman->increaseScore(100);
+        getWorld()->m_frackman->addWater();
+    }
+}
  void Squirt::doSomething()
 {
    if(m_count == 0)
        setDead();
     if(m_count > 0 &&getDirection() == right && !getWorld()->isDirt(getX()+1, getY()))
         moveTo(getX()+1, getY());
-    else if(m_count > 0 &&getDirection() == left)
+    else if(m_count > 0 &&getDirection() == left && !getWorld()->isDirt(getX()-1, getY()))
         moveTo(getX()-1, getY());
-    else if(m_count > 0 &&getDirection() == up)
+    else if(m_count > 0 &&getDirection() == up && !getWorld()->isDirt(getX(), getY()-1))
         moveTo(getX(), getY()+1);
-    else if(m_count > 0 &&getDirection() == down)
+    else if(m_count > 0 &&getDirection() == down && !getWorld()->isDirt(getX(), getY()+1))
         moveTo(getX(), getY()-1);
     else
         setDead();
@@ -177,14 +224,16 @@ void FrackMan::doSomething()
                 break;
             
             case KEY_PRESS_TAB:
-                //gold
+                getWorld()->m_actors.push_front(new goldForProtester(getWorld(), getX(), getY()));
                 break;
             case 'Z':
             case 'z':
                 //sonar
                 break;
             case KEY_PRESS_SPACE:
-              if(getDirection() == right)  //m_actors.push_front(new Boulder(this, x, y))
+              if(getWorld()->m_frackman->getWater() != 0)
+              {
+                if(getDirection() == right)  //m_actors.push_front(new Boulder(this, x, y))
                    getWorld()->m_actors.push_front(new Squirt(getWorld(), getX()+3, getY(), 4, getDirection()));
                 if(getDirection() == left)
                     getWorld()->m_actors.push_front(new Squirt(getWorld(), getX()-3, getY(), 4, getDirection()));
@@ -192,6 +241,8 @@ void FrackMan::doSomething()
                     getWorld()->m_actors.push_front(new Squirt(getWorld(), getX(), getY()+3, 4, getDirection()));
                 if(getDirection() == down)
                     getWorld()->m_actors.push_front(new Squirt(getWorld(), getX(), getY()-3, 4, getDirection()));
+                  getWorld()->m_frackman->decreaseWater();
+              }
                 
                                                                           
                 break;
