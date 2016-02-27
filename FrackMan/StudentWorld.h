@@ -43,7 +43,7 @@ public:
         {
             int x = randInt(0, 60);
             int y = randInt(20, 56);
-            while(isTooClose(x, y, 6))
+            while(isTooClose(x, y, 6) ||( x > 30 && x < 34))
             {
                 x = randInt(0, 60);
                 y = randInt(20, 56);
@@ -84,6 +84,7 @@ public:
     virtual int move();
     virtual void cleanUp();
     void removeDeadGameObjects();
+    void setDisplayText();
     
     bool isDirt(int x, int y);
     void removeDirt(int x, int y) {delete m_dirt[x][y];
@@ -93,6 +94,11 @@ public:
     bool isTooClose(int x, int y, int amt);
     void decreaseBarrels() {m_barrelsleft--;};
     bool isDirt4x4(int x, int y);
+    void setCloseVisible(int x, int y, int amt);
+    string Format(int score, int level, int lives, int health, int squirts,int gold, int sonar, int barrels);
+    bool isBoulder(int x, int y);
+    bool isClosetoProtester(int x, int y);
+    
 	
 
 
@@ -100,8 +106,11 @@ public:
     Dirt* m_dirt[64][64] = {nullptr};
     list<Actor*> m_actors;
     int m_barrelsleft;
-   
+    int m_protesters = 0;
     int m_currlevel = 0;
+    int m_ticks = 0;
+    int m_lastprotester;
+    Actor* m_protester;
 };
 
 #endif // STUDENTWORLD_H_
